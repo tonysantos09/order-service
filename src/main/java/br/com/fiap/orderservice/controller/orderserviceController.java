@@ -1,6 +1,7 @@
 package br.com.fiap.orderservice.controller;
 
 import br.com.fiap.orderservice.Order;
+import br.com.fiap.orderservice.OrderNotFoundException;
 import br.com.fiap.orderservice.dao.OrderDAO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,13 @@ public class orderserviceController {
         listaOrder = dao.getList();
     }
 
-    @GetMapping("order/{id}")
-    public ResponseEntity<Order> getHello(@PathVariable(value="id", required = true) int id) {
+    @GetMapping("/order/{id}")
+    public ResponseEntity<Order> getHello(@PathVariable(value="id", required = true) int id)  throws OrderNotFoundException {
+
+        if(id == 0){
+            throw new OrderNotFoundException(Order.class, "ID 0 ", " não é válido.");
+        }
+
         return new ResponseEntity(dao.findById(id), HttpStatus.OK);
     }
 
