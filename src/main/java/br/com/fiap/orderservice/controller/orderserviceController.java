@@ -1,10 +1,12 @@
 package br.com.fiap.orderservice.controller;
 
+import br.com.fiap.orderservice.Exception.ServerException;
 import br.com.fiap.orderservice.Order;
-import br.com.fiap.orderservice.OrderNotFoundException;
+import br.com.fiap.orderservice.Exception.OrderNotFoundException;
+import br.com.fiap.orderservice.Exception.OrderNotUpdatedException;
 import br.com.fiap.orderservice.dao.OrderDAO;
-import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.Server;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,19 +27,33 @@ public class orderserviceController {
     }
 
     @GetMapping("/order/{id}")
-    public ResponseEntity<Order> getHello(@PathVariable(value="id", required = true) int id)  throws OrderNotFoundException {
-
-        if(id == 0){
-            throw new OrderNotFoundException(Order.class, "ID 0 ", " não é válido.");
+    public ResponseEntity<Order> getHello(@PathVariable(value="id", required = true) int id) {
+        try {
+            if (id == 0) {
+                throw new OrderNotFoundException("ID não é válido.");
+            }
+            return new ResponseEntity(dao.findById(id), HttpStatus.OK);
         }
-
-        return new ResponseEntity(dao.findById(id), HttpStatus.OK);
+        catch(Exception ex)
+        {
+            throw new ServerException("Erro: " + ex);
+        }
     }
 
     @PutMapping("/order/{id}")
     public ResponseEntity update(@PathVariable(value="id", required = true) int id,
-                                 @RequestBody Order order){
-        return new ResponseEntity(dao.atualizar(id, order), HttpStatus.OK);
+                                 @RequestBody Order order) {
+        try{
+            if(id == 0){
+                throw new OrderNotUpdatedException("Atualização inválida");
+            }
+
+            return new ResponseEntity(dao.atualizar(id, order), HttpStatus.OK);
+        }
+        catch(Exception ex)
+        {
+            throw new ServerException("Erro: " + ex);
+        }
 
     }
 

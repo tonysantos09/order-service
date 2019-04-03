@@ -13,7 +13,7 @@ public class Exceptions {
     }
 
     public static String notUpdated(String entity, Map<String, String> searchParams) {
-        return String.format("%s não foi possível atualizar. %s",
+        return String.format("%s não foi possível atualizarvisual. %s",
                 StringUtils.capitalize(entity), searchParams);
     }
 
