@@ -41,7 +41,9 @@ public class OrderDAO {
     }
 
     public Order salvar(Order order) {
-
+        if(listaOrder[order.getId()] != null) {
+            return null;
+        }
         Order orderNovo = new Order();
 
         orderNovo.setId(order.getId());

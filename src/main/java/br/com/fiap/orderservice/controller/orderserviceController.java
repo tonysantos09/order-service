@@ -48,7 +48,12 @@ public class orderserviceController {
                 throw new OrderNotUpdatedException("Atualização inválida");
             }
 
-            return new ResponseEntity(dao.atualizar(id, order), HttpStatus.OK);
+            boolean status = dao.atualizar(id, order);
+
+            if(status)
+                return new ResponseEntity(status, HttpStatus.OK);
+            else
+                return new ResponseEntity(status, HttpStatus.NOT_FOUND);
         }
         catch(Exception ex)
         {
@@ -59,16 +64,26 @@ public class orderserviceController {
 
     @PostMapping("/order")
     public ResponseEntity salvar(@RequestBody Order order) {
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(dao.salvar(order).getId()).toUri();
+        try {
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(dao.salvar(order).getId()).toUri();
 
-        return new ResponseEntity(location, HttpStatus.OK);
+            return new ResponseEntity(location.toString(), HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
     }
 
     @DeleteMapping("/order/{id}")
     public ResponseEntity delete(@PathVariable(value="id", required = true) int id) {
-        return new ResponseEntity(dao.deletar(id), HttpStatus.OK);
+        boolean status = dao.deletar(id);
+        if(status)
+            return new ResponseEntity(status, HttpStatus.OK);
+        else
+            return new ResponseEntity(status, HttpStatus.NOT_FOUND);
     }
 }
