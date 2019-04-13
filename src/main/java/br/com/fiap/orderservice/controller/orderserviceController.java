@@ -7,6 +7,8 @@ import br.com.fiap.orderservice.Exception.OrderNotUpdatedException;
 import br.com.fiap.orderservice.dao.OrderDAO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Server;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.net.URI;
 
 @Slf4j
 @RestController
+@Api(value = "Order", description = "lista de pedidos")
 public class orderserviceController {
 
     private Order  listaOrder[];
